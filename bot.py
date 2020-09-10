@@ -11,10 +11,8 @@ def start_message(message):
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
-<<<<<<< Updated upstream
     if message.text == 'Италия':
         bot.send_message(message.chat.id, 'Не советуем вам сейчас путешествовать в италию monkaS')
-=======
     countries, users = globals()['countries'], globals()['users']
     db = sqlite3.connect("zabase.db")
     cursor = db.cursor()
@@ -84,13 +82,11 @@ def send_text(message):
 
     if users[iden]["city"]:
         unit = {}
-        for row in cursor.execute(
-                '''SELECT id, name, description, location, photo FROM Unit WHERE Unit.city_id = (SELECT City.id FROM City JOIN userinfo on City.name = userinfo.city)'''):
+        for row in cursor.execute('''SELECT id, name, description, location, photo FROM Unit WHERE Unit.city_id = (SELECT City.id FROM City JOIN userinfo on City.name = userinfo.city)'''):
             unit[row[0]] = {"name": row[1], "description": row[2], "location": row[3], "photo": row[4]}
         choosen = unit[random.randint(0, len(unit) - 1)]
         text = str(choosen["name"]) + ":\r\n" + str(choosen["description"]) + "\r\n" + str(choosen["location"])
         bot.send_message(message.chat.id, text)
         pass
->>>>>>> Stashed changes
 
 bot.polling()
