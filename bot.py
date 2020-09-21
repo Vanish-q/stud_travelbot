@@ -1,7 +1,8 @@
 import telebot
 import sqlite3
+import random
 
-bot = telebot.TeleBot('lul')
+bot = telebot.TeleBot('I <3 U')
 
 db = sqlite3.connect("zabase.db")
 cursor = db.cursor()
@@ -101,7 +102,19 @@ def send_text(message):
         return
             
     if users[iden]["city"]:
-        #TODO
+        if text == "Случайная":
+            unit = {}
+            for row in cursor.execute('''SELECT id, name, description, location, photo
+            FROM Unit WHERE Unit.city_id = (SELECT City.id FROM City JOIN userinfo on City.name = userinfo.city)'''):
+                unit[row[0]] = {"name": row[1], "description": row[2], "location": row[3], "photo": row[4]}
+            choosen = unit[random.randint(0, len(unit) - 1)]
+            text = str(choosen["name"]) + ":\r\n" + str(choosen["description"]) + "\r\n" + str(choosen["location"])
+        else:
+            row = cursor.execute('''SELECT name, description, location, photo 
+                        FROM Unit WHERE name =?''', [(text)])
+            photo = row[3]
+            text = str(row[0]) + ":\r\n" + str(row[1]) + "\r\n" + str(row[2])
+        bot.send_message(message.chat.id, text)
         pass
 
 bot.polling()
